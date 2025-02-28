@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menjelajahi Alam Semesta: Galaksi Bima Sakti</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #000;
+      color: #fff;
+      overflow-x: hidden;
+    }
+    
+    .star {
+      position: absolute;
+      background-color: #fff;
+      border-radius: 50%;
+      animation: twinkle 3s infinite alternate;
+    }
+    
+    .parallax-bg {
+      background-attachment: fixed;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+    
+    .zoom-effect {
+      transition: transform 0.3s ease;
+    }
+    
+    .zoom-effect:hover {
+      transform: scale(1.05);
+    }
+    
+    .hidden-content {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 1s ease;
+    }
+    
+    .show-content {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .cosmic-gradient {
+      background: linear-gradient(90deg, #0f0c29, #302b63, #24243e);
+    }
+    
+    .milky-way-gradient {
+      background: linear-gradient(135deg, #000428, #004e92);
+    }
+    
+    .planet-card {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .planet-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0, 0, 255, 0.3);
+    }
+    
+    .solar-system {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      margin: 0 auto;
+    }
+    
+    .sun {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      background: radial-gradient(circle, #ffb31a, #ff7e00);
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      margin-top: -30px;
+      margin-left: -30px;
+      box-shadow: 0 0 20px 5px #ff7e00;
+    }
+    
+    .orbit {
+      position: absolute;
+      border: 1px dashed rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    
+    .planet {
+      position: absolute;
+      border-radius: 50%;
+      transform-origin: center;
+    }
+    
+    .mercury {
+      width: 10px;
+      height: 10px;
+      background-color: #b6b6b6;
+    }
+    
+    .venus {
+      width: 15px;
+      height: 15px;
+      background-color: #e7cdcd;
+    }
+    
+    .earth {
+      width: 16px;
+      height: 16px;
+      background-color: #3498db;
+    }
+    
+    .mars {
+      width: 12px;
+      height: 12px;
+      background-color: #e74c3c;
+    }
+    
+    .scroll-indicator {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      z-index: 100;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    
+    .scroll-indicator:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    @keyframes twinkle {
+      0% {
+        opacity: 0.2;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+    
+    /* Timeline styles */
+    .timeline {
+      position: relative;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .timeline::after {
+      content: '';
+      position: absolute;
+      width: 6px;
+      background-color: white;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      margin-left: -3px;
+    }
+    
+    .timeline-container {
+      padding: 10px 40px;
+      position: relative;
+      background-color: inherit;
+      width: 50%;
+    }
+    
+    .timeline-container::after {
+      content: '';
+      position: absolute;
+      width: 25px;
+      height: 25px;
+      right: -17px;
+      background-color: #4299e1;
+      border: 4px solid #fff;
+      top: 15px;
+      border-radius: 50%;
+      z-index: 1;
+    }
+    
+    .left {
+      left: 0;
+    }
+    
+    .right {
+      left: 50%;
+    }
+    
+    .left::before {
+      content: " ";
+      height: 0;
+      position: absolute;
+      top: 22px;
+      width: 0;
+      z-index: 1;
+      right: 30px;
+      border: medium solid white;
+      border-width: 10px 0 10px 10px;
+      border-color: transparent transparent transparent rgba(255, 255, 255, 0.1);
+    }
+    
+    .right::before {
+      content: " ";
+      height: 0;
+      position: absolute;
+      top: 22px;
+      width: 0;
+      z-index: 1;
+      left: 30px;
+      border: medium solid white;
+      border-width: 10px 10px 10px 0;
+      border-color: transparent rgba(255, 255, 255, 0.1) transparent transparent;
+    }
+    
+    .right::after {
+      left: -16px;
+    }
+    
+    .timeline-content {
+      padding: 20px 30px;
+      background-color: rgba(255, 255, 255, 0.1);
+      position: relative;
+      border-radius: 6px;
+      backdrop-filter: blur(5px);
+      transition: all 0.3s ease;
+    }
+    
+    .timeline-content:hover {
+      background-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-5px);
+    }
+    
+    @media screen and (max-width: 600px) {
+      .timeline::after {
+        left: 31px;
+      }
+      
+      .timeline-container {
+        width: 100%;
+        padding-left: 70px;
+        padding-right: 25px;
+      }
+      
+      .timeline-container::before {
+        left: 60px;
+        border: medium solid white;
+        border-width: 10px 10px 10px 0;
+        border-color: transparent rgba(255, 255, 255, 0.1) transparent transparent;
+      }
+    
+      .left::after, .right::after {
+        left: 15px;
+      }
+      
+      .right {
+        left: 0%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="stars-container"></div>
+  
+  <!-- Navigation -->
+  <nav class="fixed w-full z-50 bg-black bg-opacity-70 backdrop-filter backdrop-blur-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <span class="text-2xl font-bold text-blue-400">KosmosKita</span>
+          </div>
+          <div class="hidden md:block">
+            <div class="ml-10 flex items-baseline space-x-4">
+              <a href="#beranda" class="nav-link text-white hover:text-blue-300 px-3 py-2 rounded-md text-sm font-medium">Beranda</a>
+              <a href="#alam-semesta" class="nav-link text-white hover:text-blue-300 px-3 py-2 rounded-md text-sm font-medium">Alam Semesta</a>
+              <a href="#bima-sakti" class="nav-link text-white hover:text-blue-300 px-3 py-2 rounded-md text-sm font-medium">Bima Sakti</a>
+              <a href="#fakta-menarik" class="nav-link text-white hover:text-blue-300 px-3 py-2 rounded-md text-sm font-medium">Fakta Menarik</a>
+              <a href="#eksplorasi" class="nav-link text-white hover:text-blue-300 px-3 py-2 rounded-md text-sm font-medium">Eksplorasi</a>
+            </div>
+          </div>
+        </div>
+        <div class="md:hidden">
+          <button id="mobile-menu-button" class="text-gray-400 hover:text-white focus:outline-none">
+            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-black bg-opacity-90">
+      <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+        <a href="#beranda" class="nav-link text-white hover:text-blue-300 block px-3 py-2 rounded-md text-base font-medium">Beranda</a>
+        <a href="#alam-semesta" class="nav-link text-white hover:text-blue-300 block px-3 py-2 rounded-md text-base font-medium">Alam Semesta</a>
+        <a href="#bima-sakti" class="nav-link text-white hover:text-blue-300 block px-3 py-2 rounded-md text-base font-medium">Bima Sakti</a>
+        <a href="#fakta-menarik" class="nav-link text-white hover:text-blue-300 block px-3 py-2 rounded-md text-base font-medium">Fakta Menarik</a>
+        <a href="#eksplorasi" class="nav-link text-white hover:text-blue-300 block px-3 py-2 rounded-md text-base font-medium">Eksplorasi</a>
+      </div>
+    </div>
+  </nav>
+  
+  <!-- Hero Section -->
+  <section id="beranda" class="h-screen flex items-center justify-center parallax-bg" style="background-image: url('/api/placeholder/1920/1080');">
+    <div class="text-center px-4">
+      <h1 class="text-5xl md:text-7xl font-bold mb-6 text-blue-400 tracking-wider">ALAM SEMESTA</h1>
+      <p class="text-xl md:text-2xl mb-8 max-w-2xl mx-auto">Menjelajahi keajaiban kosmik dan rahasia Galaksi Bima Sakti</p>
+      <button id="explore-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        Mulai Eksplorasi
+      </button>
+    </div>
+    <div class="absolute bottom-10 w-full text-center animate-bounce">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mx-auto text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+      </svg>
+    </div>
+  </section>
+  
+  <!-- Universe Section -->
+  <section id="alam-semesta" class="py-20 cosmic-gradient">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-4xl font-bold mb-12 text-center">Mengenal Alam Semesta</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center mb-16">
+        <div class="hidden-content">
+          <h3 class="text-2xl font-bold mb-4 text-blue-300">Asal Usul Kosmos</h3>
+          <p class="mb-4">Alam semesta diperkirakan terbentuk sekitar 13,8 miliar tahun yang lalu melalui peristiwa Big Bang. Pada awalnya, seluruh materi dan energi terkonsentrasi dalam satu titik yang sangat panas dan padat.</p>
+          <p>Setelah ledakan besar, alam semesta mulai mengembang dengan sangat cepat (inflasi kosmik) dan perlahan-lahan mendingin, memungkinkan terbentuknya partikel-partikel dasar, atom, dan akhirnya galaksi-galaksi.</p>
+        </div>
+        <div class="hidden-content bg-black bg-opacity-50 p-6 rounded-lg">
+          <div class="timeline">
+            <div class="timeline-container left">
+              <div class="timeline-content">
+                <h2 class="text-xl font-bold">13,8 Miliar Tahun Lalu</h2>
+                <p>Big Bang - awal mula alam semesta</p>
+              </div>
+            </div>
+            <div class="timeline-container right">
+              <div class="timeline-content">
+                <h2 class="text-xl font-bold">13,7 Miliar Tahun Lalu</h2>
+                <p>Pembentukan atom-atom pertama</p>
+              </div>
+            </div>
+            <div class="timeline-container left">
+              <div class="timeline-content">
+                <h2 class="text-xl font-bold">13 Miliar Tahun Lalu</h2>
+                <p>Pembentukan galaksi awal</p>
+              </div>
+            </div>
+            <div class="timeline-container right">
+              <div class="timeline-content">
+                <h2 class="text-xl font-bold">4,6 Miliar Tahun Lalu</h2>
+                <p>Pembentukan Tata Surya kita</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+        <div class="hidden-content bg-black bg-opacity-30 p-6 rounded-lg zoom-effect">
+          <div class="text-blue-300 text-5xl mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Ekspansi Alam Semesta</h3>
+          <p>Alam semesta terus mengembang bahkan hingga saat ini, dan ekspansi ini bahkan semakin cepat karena adanya pengaruh energi gelap (dark energy).</p>
+        </div>
+        <div class="hidden-content bg-black bg-opacity-30 p-6 rounded-lg zoom-effect">
+          <div class="text-blue-300 text-5xl mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Materi Gelap</h3>
+          <p>Sekitar 85% materi di alam semesta adalah materi gelap (dark matter) yang tidak dapat dilihat secara langsung, tetapi keberadaannya diketahui dari pengaruh gravitasinya.</p>
+        </div>
+        <div class="hidden-content bg-black bg-opacity-30 p-6 rounded-lg zoom-effect">
+          <div class="text-blue-300 text-5xl mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Struktur Kosmik</h3>
+          <p>Alam semesta tersusun dalam struktur yang sangat besar, dengan galaksi-galaksi yang berkelompok membentuk cluster dan supercluster yang terhubung seperti jaring laba-laba kosmik.</p>
+        </div>
+      </div>
+      
+      <div class="hidden-content bg-black bg-opacity-50 p-8 rounded-lg">
+        <h3 class="text-2xl font-bold mb-4 text-center text-blue-300">Skala Alam Semesta yang Tak Terbayangkan</h3>
+        <div class="overflow-x-auto">
+          <table class="min-w-full bg-transparent">
+            <thead>
+              <tr>
+                <th class="px-4 py-2 text-left">Objek</th>
+                <th class="px-4 py-2 text-left">Ukuran/Jarak</th>
+                <th class="px-4 py-2 text-left">Perbandingan</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="bg-black bg-opacity-30">
+                <td class="px-4 py-2">Diameter Bumi</td>
+                <td class="px-4 py-2">12,742 km</td>
+                <td class="px-4 py-2">-</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-2">Jarak Bumi ke Bulan</td>
+                <td class="px-4 py-2">384,400 km</td>
+                <td class="px-4 py-2">30x diameter Bumi</td>
+              </tr>
+              <tr class="bg-black bg-opacity-30">
+                <td class="px-4 py-2">Jarak Bumi ke Matahari</td>
+                <td class="px-4 py-2">149,6 juta km (1 AU)</td>
+                <td class="px-4 py-2">390x jarak Bumi-Bulan</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-2">Diameter Tata Surya</td>
+                <td class="px-4 py-2">~9 miliar km</td>
+                <td class="px-4 py-2">60x jarak Bumi-Matahari</td>
+              </tr>
+              <tr class="bg-black bg-opacity-30">
+                <td class="px-4 py-2">Jarak ke bintang terdekat (Proxima Centauri)</td>
+                <td class="px-4 py-2">4,25 tahun cahaya</td>
+                <td class="px-4 py-2">268,000x jarak Bumi-Matahari</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-2">Diameter Galaksi Bima Sakti</td>
+                <td class="px-4 py-2">~100,000 tahun cahaya</td>
+                <td class="px-4 py-2">23,500x jarak ke Proxima Centauri</td>
+              </tr>
+              <tr class="bg-black bg-opacity-30">
+                <td class="px-4 py-2">Jarak ke Galaksi Andromeda</td>
+                <td class="px-4 py-2">2,5 juta tahun cahaya</td>
+                <td class="px-4 py-2">25x diameter Bima Sakti</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-2">Alam semesta yang dapat diamati</td>
+                <td class="px-4 py-2">~93 miliar tahun cahaya</td>
+                <td class="px-4 py-2">37,200x jarak ke Andromeda</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Milky Way Section -->
+  <section id="bima-sakti" class="py-20 milky-way-gradient">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-4xl font-bold mb-12 text-center">Galaksi Bima Sakti</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center mb-16">
+        <div class="hidden-content order-2 md:order-1">
+          <h3 class="text-2xl font-bold mb-4 text-blue-300">Rumah Kita di Kosmos</h3>
+          <p class="mb-4">Galaksi Bima Sakti adalah galaksi spiral yang memiliki diameter sekitar 100.000 tahun cahaya dan berisi lebih dari 100 miliar bintang, termasuk Matahari kita.</p>
+          <p class="mb-4">Namanya "Bima Sakti" atau "Milky Way" berasal dari penampakan galaksi ini dari Bumi yang terlihat seperti jalur susu yang berkilau di langit malam.</p>
+          <p>Matahari dan Tata Surya kita berada sekitar 27.000 tahun cahaya dari pusat galaksi, di lengan spiral Orion, yang merupakan salah satu lengan yang lebih kecil dari Bima Sakti.</p>
+        </div>
+        <div class="hidden-content order-1 md:order-2">
+          <img src="/api/placeholder/600/400" alt="Galaksi Bima Sakti" class="w-full h-auto rounded-lg shadow-lg">
+          <p class="text-sm text-center mt-2 text-gray-400">Representasi artistik Galaksi Bima Sakti</p>
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+        <div class="hidden-content bg-black bg-opacity-30 p-6 rounded-lg hover:bg-opacity-50 transition duration-300">
+          <h3 class="text-xl font-bold mb-4 border-l-4 border-blue-400 pl-3">Struktur Bima Sakti</h3>
+          <ul class="space-y-2">
+            <li class="flex items-start">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 mt-1 text-blue-300" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+              </svg>
+              <span>Pusat Galaksi (Bulge) - berisi bintang-bintang tua dan lubang hitam supermasif Sagittarius A*</span>
+            </li>
+            <li class="flex items-start">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 mt-1 text-blue-300" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+              </svg>
+              <span>Piringan (Disk) - berisi sebagian besar materi galaksi termasuk gas, debu, dan bintang-bintang muda</span>
+            </li>
+            <li class="flex items-start">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 mt-1 text-blue-300" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" cli
